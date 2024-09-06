@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { authStorage } from "../_utils/auth-storage";
 import { useRouter } from "next/navigation";
-import { getUser } from "../_services/auth-api";
-import { User } from "../_utils/type-common";
+import { authStorage } from "@/utils/auth-storage";
+import { getUser } from "@/services/auth-api";
+import { User } from "@/utils/type-common";
 
 export default function HomePage() {
   const [token, setToken] = useState<string>("");

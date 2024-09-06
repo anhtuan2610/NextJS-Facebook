@@ -5,14 +5,19 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { registerApi } from "../_services/auth-api";
 import { useRouter } from "next/navigation";
+import { registerApi } from "../services/auth-api";
+import { toast } from "sonner";
+import Input from "@/common/Input";
 
 const schema = z.object({
-  userName: z.string().min(4, "user name min = 4").max(12, "name max = 12"),
+  userName: z
+    .string()
+    .min(4, "user name at least 4 characters")
+    .max(12, "name max has limit 12 characters"),
   email: z.string().email(),
-  password: z.string().min(3, "password at least 3 characters "),
-  fullName: z.string().min(3, "full name min = 3"),
+  password: z.string().min(3, "password at least 3 characters"),
+  fullName: z.string().min(3, "full name at least 3 characters"),
 });
 
 export type RegisterFormType = z.infer<typeof schema>;
@@ -43,10 +48,11 @@ export default function RegisterForm() {
       });
     },
     onSuccess: () => {
+      toast.success("Register success, let's login !");
       router.push("/login");
     },
     onError: (error) => {
-      console.error("Registration failed:", error);
+      toast.error("Registration failed !! " + error.message);
     },
   });
 
@@ -58,40 +64,41 @@ export default function RegisterForm() {
     <div className="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full xl:w-[400px]">
       <form onSubmit={handleSubmit(onSubmitHandle)}>
         <div className="mb-4">
-          <input
-            type="text"
+          <Input
+            scale="medium"
+            variant="primary"
             placeholder="User name"
-            className="block w-full h-14 border border-gray-300 rounded-lg px-4 text-base focus:border-[#1877F2] outline-none"
             {...register("userName")}
           />
           <span className="text-red-700">{errors.userName?.message}</span>
         </div>
 
         <div className="mb-4">
-          <input
-            type="text"
+          <Input
+            scale="medium"
+            variant="primary"
             placeholder="Email"
-            className="block w-full h-14 border border-gray-300 rounded-lg px-4 text-base focus:border-[#1877F2] outline-none"
             {...register("email")}
           />
           <span className="text-red-700">{errors.email?.message}</span>
         </div>
 
         <div className="mb-4">
-          <input
-            type="password"
+          <Input
+            scale="medium"
+            variant="primary"
             placeholder="Password"
-            className="block w-full h-14 border border-gray-300 rounded-lg px-4 text-base focus:border-[#1877F2] outline-none"
+            type="password"
             {...register("password")}
           />
           <span className="text-red-700">{errors.password?.message}</span>
         </div>
 
         <div className="mb-4">
-          <input
-            type="text"
-            placeholder="Full Name"
-            className="block w-full h-14 border border-gray-300 rounded-lg px-4 text-base focus:border-[#1877F2] outline-none"
+          <Input
+            scale="medium"
+            variant="primary"
+            placeholder="Full name"
             {...register("fullName")}
           />
           <span className="text-red-700">{errors.fullName?.message}</span>
@@ -101,9 +108,9 @@ export default function RegisterForm() {
           Register
         </button>
         <div className="text-center mt-4">
-          <a href="#" className="text-[#1877F2] text-sm hover:underline">
+          <div className="text-[#1877F2] text-sm hover:underline">
             Already has account ?
-          </a>
+          </div>
         </div>
         <div className="py-5">
           <hr className="bg-[#CCCCCC]" />

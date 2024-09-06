@@ -14,7 +14,11 @@ apiClient.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    return Promise.reject(error);
+    const { status, data } = error.response;
+    return Promise.reject({
+      status,
+      message: data.message || "error can't explain"
+    });
   }
 );
 

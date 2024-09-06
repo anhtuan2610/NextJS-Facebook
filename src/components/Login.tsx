@@ -1,25 +1,30 @@
 "use client";
 
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { loginApi } from "../_services/auth-api";
 import { useRouter } from "next/navigation";
-import { ResponseLogin } from "../_utils/type-common";
-import { authStorage } from "../_utils/auth-storage";
-import { useEffect } from "react";
+import { z } from "zod";
+import { loginApi } from "../services/auth-api";
+import { authStorage } from "../utils/auth-storage";
+import { toast } from "sonner";
+import Input from "@/common/Input";
 
 const schema = z.object({
-  userName: z.string().min(4, "user name min = 4").max(12, "name max = 12"),
-  password: z.string().min(3, "password at least 3 characters "),
+  userName: z
+    .string()
+    .min(4, "user name at least 4 characters")
+    .max(12, "user name has limit 12 characters"),
+  password: z.string().min(3, "password at least 3 characters"),
 });
 
 export type LoginFormType = z.infer<typeof schema>;
 
 export default function LoginForm() {
   const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -36,7 +41,7 @@ export default function LoginForm() {
   const { mutate } = useMutation({
     mutationKey: ["authLogin"],
     mutationFn: async (data: LoginFormType) => {
-      const response: ResponseLogin = await loginApi({
+      const response = await loginApi({
         stringUrl: "login",
         data: data,
       });
@@ -44,10 +49,12 @@ export default function LoginForm() {
     },
     onSuccess: (response) => {
       handleAccessToken(response.accessToken);
+      toast.success("Login success !");
       router.push("/home");
     },
     onError: (error) => {
-      console.error("Login failed:", error);
+      console.log(error.message);
+      toast.error("Login fail !! " + error.message);
     },
   });
 
@@ -69,20 +76,21 @@ export default function LoginForm() {
     <div className="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full xl:w-[400px]">
       <form onSubmit={handleSubmit(onSubmitHandle)}>
         <div className="mb-4">
-          <input
-            type="text"
+          <Input
+            scale="medium"
+            variant="primary"
             placeholder="Email or phone number"
-            className="block w-full h-14 border border-gray-300 rounded-lg px-4 text-base focus:border-[#1877F2] outline-none"
             {...register("userName")}
           />
           <span className="text-red-700">{errors.userName?.message}</span>
         </div>
 
         <div className="mb-4">
-          <input
-            type="password"
+          <Input
+            scale="medium"
+            variant="primary"
             placeholder="Password"
-            className="block w-full h-14 border border-gray-300 rounded-lg px-4 text-base focus:border-[#1877F2] outline-none"
+            type="password"
             {...register("password")}
           />
           <span className="text-red-700">{errors.password?.message}</span>
@@ -92,9 +100,9 @@ export default function LoginForm() {
           Login
         </button>
         <div className="text-center mt-4">
-          <a href="#" className="text-[#1877F2] text-sm hover:underline">
+          <div className="text-[#1877F2] text-sm hover:underline">
             Forgot password?
-          </a>
+          </div>
         </div>
         <div className="py-5">
           <hr className="bg-[#CCCCCC]" />
