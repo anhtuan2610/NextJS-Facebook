@@ -3,14 +3,13 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { z } from "zod";
-import { loginApi } from "../services/auth-api";
-import { authStorage } from "../utils/auth-storage";
 import { toast } from "sonner";
+import { authStorage } from "../utils/auth-storage";
 import Input from "@/common/Input";
+import { loginApi } from "@/services/auth-api";
 
 const schema = z.object({
   userName: z
@@ -38,38 +37,33 @@ export default function LoginForm() {
     resolver: zodResolver(schema),
   });
 
-  const { mutate } = useMutation({
-    mutationKey: ["authLogin"],
-    mutationFn: async (data: LoginFormType) => {
-      const response = await loginApi({
-        stringUrl: "login",
-        data: data,
-      });
-      return response;
-    },
-    onSuccess: (response) => {
-      handleAccessToken(response.accessToken);
-      toast.success("Login success !");
-      router.push("/home");
-    },
-    onError: (error) => {
-      console.log(error.message);
-      toast.error("Login fail !! " + error.message);
-    },
-  });
-
   useEffect(() => {
     if (authStorage.getToken()) {
       router.push("/home");
     }
   }, []);
 
-  function handleAccessToken(accessToken: string) {
+  async function handleAccessToken(accessToken: string) {
     authStorage.setToken(accessToken);
   }
 
-  const onSubmitHandle = (data: LoginFormType) => {
-    mutate(data);
+  const onSubmitHandle = async (data: LoginFormType) => {
+    try {
+      const response = await loginApi({
+        stringUrl: "login",
+        data: data,
+      });
+      if (response.accessToken) {
+        await handleAccessToken(response.accessToken);
+        toast.success("Login success!");
+        router.push("/home");
+      } else {
+        throw new Error("Login failed");
+      }
+    } catch (error: any) {
+      console.log(error);
+      toast.error("Login failed !! " + error.message);
+    }
   };
 
   return (

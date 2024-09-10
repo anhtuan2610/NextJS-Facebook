@@ -1,7 +1,7 @@
 
 import { LoginFormType } from "@/components/Login";
 import { RegisterFormType } from "@/components/Register";
-import { ResponseLogin, TUser } from "@/utils/type-common";
+import { ResponseAuth, TUser } from "@/utils/type-common";
 import { post } from "./axiosConfig";
 
 export async function registerApi({
@@ -11,7 +11,7 @@ export async function registerApi({
   stringUrl: string;
   data: RegisterFormType;
 }) {
-  await post({
+  return await post<ResponseAuth>({
     url: `/auth/${stringUrl}`,
     data,
   });
@@ -24,7 +24,7 @@ export async function loginApi({
   stringUrl: string;
   data: LoginFormType;
 }) {
-  return await post<ResponseLogin>({
+  return await post<ResponseAuth>({
     url: `/auth/${stringUrl}`,
     data,
   });

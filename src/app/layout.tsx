@@ -3,7 +3,6 @@
 // import { Roboto_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
-import { ReactQueryClientProvider } from "./ReactQueryClientProvider";
 
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",
@@ -31,13 +30,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ReactQueryClientProvider>
-      <html lang="en">
-        <body>
-          <div>{children}</div>
-          <Toaster richColors position="bottom-left" duration={2500} toastOptions={{style: {padding: "15px", fontSize: "1.25rem"}}}/>
-        </body>
-      </html>
-    </ReactQueryClientProvider>
+    <html lang="en">
+      <body>
+        <div>{children}</div>
+        <Toaster
+          richColors
+          position="bottom-left"
+          duration={2500}
+          toastOptions={{ style: { padding: "15px", fontSize: "1.25rem" } }}
+        />
+      </body>
+    </html>
   );
 }

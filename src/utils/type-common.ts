@@ -11,17 +11,25 @@ export type TUser = {
   gender: "string",
   createdAt: "string",
   updatedAt: "string",
-  chatReceivers: [],
-  chatSenders: [],
-  comments: [],
-  friendshipUserId1Navigations: [],
-  friendshipUserId2Navigations: [],
-  likes: [],
-  notifications: [],
-  posts: []
+  // chatReceivers: [],
+  // chatSenders: [],
+  // comments: [],
+  // friendshipUserId1Navigations: [],
+  // friendshipUserId2Navigations: [],
+  // likes: [],
+  // notifications: [],
+  // posts: []
 }
 
-export type ResponseLogin = {
+export type ResponseAuth = {
     message: string,
     accessToken: string
+}
+
+export type TResponseLastedChat = {
+  userId: Number,
+  fullName: string,
+  lastMessage: string,
+  createAt: string,
+  isSender: boolean,
 }

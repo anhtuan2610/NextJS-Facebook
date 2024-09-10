@@ -10,15 +10,21 @@ import { registerApi } from "../services/auth-api";
 import { toast } from "sonner";
 import Input from "@/common/Input";
 
-const schema = z.object({
-  userName: z
-    .string()
-    .min(4, "user name at least 4 characters")
-    .max(12, "name max has limit 12 characters"),
-  email: z.string().email(),
-  password: z.string().min(3, "password at least 3 characters"),
-  fullName: z.string().min(3, "full name at least 3 characters"),
-});
+const schema = z
+  .object({
+    userName: z
+      .string()
+      .min(4, "user name at least 4 characters")
+      .max(12, "name max has limit 12 characters"),
+    email: z.string().email(),
+    password: z.string().min(3, "password at least 3 characters"),
+    rePassword: z.string().min(3, "password at least 3 characters"),
+    fullName: z.string().min(3, "full name at least 3 characters"),
+  })
+  .refine((data) => data.password === data.rePassword, {
+    path: ["rePassword"],
+    message: "Password do not match",
+  });
 
 export type RegisterFormType = z.infer<typeof schema>;
 
@@ -33,31 +39,25 @@ export default function RegisterForm() {
       userName: "",
       email: "",
       password: "",
+      rePassword: "",
       fullName: "",
     },
     mode: "onSubmit",
     resolver: zodResolver(schema),
   });
-
-  const { mutate } = useMutation({
-    mutationKey: ["authRegister"],
-    mutationFn: async (data: RegisterFormType) => {
+  
+  const onSubmitHandle = async (data: RegisterFormType) => {
+    try {
       await registerApi({
         stringUrl: "register",
         data: data,
       });
-    },
-    onSuccess: () => {
-      toast.success("Register success, let's login !");
-      router.push("/login");
-    },
-    onError: (error) => {
-      toast.error("Registration failed !! " + error.message);
-    },
-  });
 
-  const onSubmitHandle = (data: RegisterFormType) => {
-    mutate(data);
+      toast.success("Register success, let's login!");
+      router.push("/login");
+    } catch (error: any) {
+      toast.error("Registration failed !! " + error.message);
+    }
   };
 
   return (
@@ -92,6 +92,17 @@ export default function RegisterForm() {
             {...register("password")}
           />
           <span className="text-red-700">{errors.password?.message}</span>
+        </div>
+
+        <div className="mb-4">
+          <Input
+            scale="medium"
+            variant="primary"
+            placeholder="Repeat password"
+            {...register("rePassword")}
+            type="password"
+          />
+          <span className="text-red-700">{errors.rePassword?.message}</span>
         </div>
 
         <div className="mb-4">
