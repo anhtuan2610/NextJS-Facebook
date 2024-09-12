@@ -1,4 +1,4 @@
-import RegisterForm from "@/components/Register";
+import RegisterForm from "../_components/Register";
 
 export default function RegisterPage() {
   return (
@@ -9,8 +9,8 @@ export default function RegisterPage() {
             facebook
           </h1>
           <div className="text-xl mb-4 xl:text-3xl">
-            <p>Access your account and stay connected !</p>
-            <p><span className="font-bold">register</span> now to make a new friends</p>
+            <div>Access your account and stay connected !</div>
+            <div><span className="font-bold">register</span> now to make a new friends</div>
           </div>
         </div>
         <RegisterForm/>

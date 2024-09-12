@@ -1,24 +1,16 @@
 export type TUser = {
-  id: "string",
-  username: "string",
-  email: "string",
-  passwordHash: "string",
-  fullName: "string",
-  profileImg: "string",
-  coverImg: "string",
-  bio: "string",
-  dateOfBirth: "string",
-  gender: "string",
-  createdAt: "string",
-  updatedAt: "string",
-  // chatReceivers: [],
-  // chatSenders: [],
-  // comments: [],
-  // friendshipUserId1Navigations: [],
-  // friendshipUserId2Navigations: [],
-  // likes: [],
-  // notifications: [],
-  // posts: []
+  id: number,
+  username: string,
+  email: string,
+  passwordHash: string,
+  fullName: string,
+  profileImg: string,
+  coverImg: string,
+  bio: string,
+  dateOfBirth: string,
+  gender: string,
+  createdAt: string,
+  updatedAt: string,
 }
 
 export type ResponseAuth = {
@@ -27,7 +19,7 @@ export type ResponseAuth = {
 }
 
 export type TResponseLastedChat = {
-  userId: Number,
+  userId: number,
   fullName: string,
   lastMessage: string,
   createAt: string,

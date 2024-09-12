@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { z } from "zod";
 import { toast } from "sonner";
-import { authStorage } from "../utils/auth-storage";
-import Input from "@/common/Input";
+import { setCookie } from "cookies-next";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { loginApi } from "@/services/auth-api";
+import Input from "../_components/common/Input";
+import useSWR from "swr";
 
 const schema = z.object({
   userName: z
@@ -23,6 +23,9 @@ export type LoginFormType = z.infer<typeof schema>;
 
 export default function LoginForm() {
   const router = useRouter();
+  // const fetcher = ({url, data}: {url: string, data: LoginFormType}) => loginApi({stringUrl: url, data});
+
+  // const { data, mutate } = useSWR("/login", fetcher);
 
   const {
     register,
@@ -37,31 +40,21 @@ export default function LoginForm() {
     resolver: zodResolver(schema),
   });
 
-  useEffect(() => {
-    if (authStorage.getToken()) {
-      router.push("/home");
-    }
-  }, []);
-
-  async function handleAccessToken(accessToken: string) {
-    authStorage.setToken(accessToken);
-  }
-
   const onSubmitHandle = async (data: LoginFormType) => {
     try {
       const response = await loginApi({
         stringUrl: "login",
         data: data,
       });
-      if (response.accessToken) {
-        await handleAccessToken(response.accessToken);
-        toast.success("Login success!");
-        router.push("/home");
+      const token = response.accessToken;
+      if (token) {
+          setCookie("jwt", token);
+          toast.success("Login success!");
+          router.push("/home");
       } else {
         throw new Error("Login failed");
       }
     } catch (error: any) {
-      console.log(error);
       toast.error("Login failed !! " + error.message);
     }
   };

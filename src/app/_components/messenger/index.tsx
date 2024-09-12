@@ -1,15 +1,15 @@
 "use client";
 
-import Image from "next/image";
-import messengerIcon from "../../assets/images/icons8-messenger-40.png";
 import { useState } from "react";
+import Image from "next/image";
+import messengerIcon from "@/assets/images/icons8-messenger-40.png";
 import ListMessenger from "./ListMessenger";
 
 export default function Messenger() {
   const [isShow, setIsShow] = useState(false);
 
   return (
-    <div className="w-10 flex justify-center items-center bg-[#E4E6EB] rounded-full hover:bg-[#d3d5da] cursor-pointer">
+    <div className="w-11 flex justify-center items-center bg-[#E4E6EB] rounded-full hover:bg-[#d3d5da] cursor-pointer">
       <div className="relative">
         <Image
           src={messengerIcon}

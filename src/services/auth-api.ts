@@ -1,8 +1,7 @@
-
-import { LoginFormType } from "@/components/Login";
-import { RegisterFormType } from "@/components/Register";
-import { ResponseAuth, TUser } from "@/utils/type-common";
 import { post } from "./axiosConfig";
+import { ResponseAuth, TUser } from "@/utils/type-common";
+import { RegisterFormType } from "@/app/_components/Register";
+import { LoginFormType } from "@/app/_components/Login";
 
 export async function registerApi({
   stringUrl,

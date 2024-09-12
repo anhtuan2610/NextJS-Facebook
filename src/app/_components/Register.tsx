@@ -3,12 +3,11 @@
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { registerApi } from "../services/auth-api";
 import { toast } from "sonner";
-import Input from "@/common/Input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { registerApi } from "@/services/auth-api";
+import Input from "../_components/common/Input";
 
 const schema = z
   .object({
