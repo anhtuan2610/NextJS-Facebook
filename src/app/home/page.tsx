@@ -5,9 +5,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useUserStore } from "@/store/user";
-import { getUser } from "@/services/auth-api";
 import userImg from "@/assets/images/user-img.jpg";
-import NavbarHeader from "../_components/navbar/Header";
+import Navbar from "@/app/_components/Navbar/Navbar";
+import { getUser } from "@/services/auth-api";
+import Loading from "@/components/common/Loading";
 
 export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -15,9 +16,9 @@ export default function HomePage() {
   const router = useRouter();
 
   async function getUserInfo() {
-    const token = getCookie("jwt");
-    if (token) {
-      const user = await getUser({ stringUrl: "user", token: token });
+    const accessToken = getCookie("accessToken");
+    if (accessToken) {
+      const user = await getUser({ token: accessToken });
       if (user) {
         setUser(user);
         setIsLoading(false);
@@ -26,7 +27,7 @@ export default function HomePage() {
   }
 
   function handleLogout() {
-    deleteCookie("jwt");
+    deleteCookie("accessToken");
     setUser(null);
     router.push("/login");
   }
@@ -36,12 +37,16 @@ export default function HomePage() {
   }, []);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loading />;
+  }
+
+  if (user == null) {
+    return null;
   }
 
   return (
     <div className="min-h-screen bg-[#F0F2F5]">
-      <NavbarHeader />
+      <Navbar />
       <div className="w-full h-full pt-14 ">
         <div>{user?.fullName}</div>
         <div className="cursor-pointer inline-block" onClick={handleLogout}>
@@ -58,9 +63,17 @@ export default function HomePage() {
             </div>
             <div className="mr-2">X</div>
           </div>
-          <div className="flex-grow px-2 overflow-y-auto">
-            <div>content</div>
+          {/* chat list 1 : 1 */}
+          <div className="flex-grow px-2 pt-2 overflow-y-auto">
+            <div className="inline-block max-w-full mb-2 py-2 px-3 text-base leading-5 font-medium text-black bg-[#F0F0F0] rounded-2xl break-words">Hello</div>
+            <div className="flex justify-end">
+              <div className="inline-block max-w-full mb-2 py-2 px-3 text-base leading-5 font-medium text-white bg-[#0084FF] rounded-2xl break-words">
+                Hiiiiiii
+              </div>
+            </div>
+            <div className="inline-block max-w-full mb-2 py-2 px-3 text-base leading-5 font-medium text-black bg-[#F0F0F0] rounded-2xl break-words">Nice to meet you</div>
           </div>
+          {/* type-send */}
           <div className="w-full h-9 flex flex-nowrap gap-2 px-2">
             <input
               className="w-full p-3 rounded-full bg-[#F0F2F5] text-sm text-gray-700 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-colors"

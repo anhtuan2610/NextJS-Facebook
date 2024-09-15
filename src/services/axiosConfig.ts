@@ -5,7 +5,7 @@ const apiClient = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 5000, 
+  timeout: 5000,
 });
 
 // handle response (xử lý dữ liệu trả về)
@@ -14,15 +14,18 @@ apiClient.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    const { status, data } = error.response;
-    return Promise.reject({
-      status,
-      message: data.message || "error can't explain"
-    });
+    if (error.response && error.response.data) {
+      // const status = error.response.status;
+      return Promise.reject(error.response.data.message);
+    } else if (error.request) {
+      console.error("Network Error: No response received from the server");
+    } else {
+      console.error("Error: ", error.message);
+    }
   }
 );
 
-export const get = <T,>({
+export const get = <T>({
   url,
   params,
   config,
@@ -37,7 +40,7 @@ export const get = <T,>({
     ...config,
   });
 
-export const post = <T,>({
+export const post = <T>({
   url,
   data,
   config,

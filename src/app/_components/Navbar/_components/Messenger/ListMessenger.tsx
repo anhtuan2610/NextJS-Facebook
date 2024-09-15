@@ -5,13 +5,14 @@ import { getLastedChatInfo } from "@/services/chat-api";
 import { useUserStore } from "@/store/user";
 import userImg from "@/assets/images/user-img.jpg";
 import SearchMessenger from "./SearchMessenger";
+import Loading from "@/components/common/Loading";
 
 export default function ListMessenger() {
   const [searchString, setSearchString] = useState<string>("");
-  const { user } = useUserStore();
-  const fetcher = (url: string) => getLastedChatInfo(url);
+  const { user } = useUserStore(); // Ép TypeScript hiểu rằng user chắc chắn tồn tại
+  const userId = user!.id;
 
-  const { data, isLoading, error } = useSWR(`/chat/lasted/${user?.id}?searchString=${searchString}`, fetcher, {
+  const { data, isLoading, error } = useSWR(["fetchMessage", userId, searchString], () => getLastedChatInfo({userId, searchString}), {
     revalidateOnFocus: false
   });
 
@@ -28,7 +29,7 @@ export default function ListMessenger() {
       {/* list */}
       <div className="pt-4 flex flex-col gap-2">
         {isLoading ? (
-          <div>...Loading</div>
+          <Loading/>
         ) : error ? (
           <div>{error.message}</div>
         ) : (

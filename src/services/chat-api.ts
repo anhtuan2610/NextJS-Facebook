@@ -1,6 +1,11 @@
 import { TResponseLastedChat } from "@/utils/type-common";
 import { get } from "./axiosConfig";
 
-export async function getLastedChatInfo(stringUrl: string) {
-  return await get<TResponseLastedChat[]>({ url: stringUrl });
+type TParams = {
+  userId?: number,
+  searchString?: string,
+}
+
+export async function getLastedChatInfo({ userId, searchString} : TParams) {
+  return await get<TResponseLastedChat[]>({url:"/chat/lasted", params: {userId, searchString: searchString || undefined}});
 }

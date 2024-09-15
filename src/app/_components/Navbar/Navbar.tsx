@@ -9,9 +9,9 @@ import videoIcon from "@/assets/images/icons8-video-40.png";
 import marketIcon from "@/assets/images/icons8-market-40.png";
 import friendIcon from "@/assets/images/icons8-friend-40.png";
 import gameIcon from "@/assets/images/icons8-game-40.png";
-import Messenger from "../messenger";
+import Messenger from "@/app/_components/Navbar/_components/Messenger/TriggerMessenger";
 
-export default function NavbarHeader() {
+export default function Navbar() {
   return (
     <div className="w-full flex justify-between items-center bg-white px-4 h-14 shadow-md fixed">
       {/* left */}

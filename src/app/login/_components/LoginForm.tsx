@@ -1,15 +1,15 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
 import { setCookie } from "cookies-next";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginApi } from "@/services/auth-api";
-import Input from "../_components/common/Input";
-import useSWR from "swr";
+import Input from "@/components/common/Input";
 
 const schema = z.object({
   userName: z
@@ -22,10 +22,8 @@ const schema = z.object({
 export type LoginFormType = z.infer<typeof schema>;
 
 export default function LoginForm() {
+  const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
-  // const fetcher = ({url, data}: {url: string, data: LoginFormType}) => loginApi({stringUrl: url, data});
-
-  // const { data, mutate } = useSWR("/login", fetcher);
 
   const {
     register,
@@ -43,19 +41,18 @@ export default function LoginForm() {
   const onSubmitHandle = async (data: LoginFormType) => {
     try {
       const response = await loginApi({
-        stringUrl: "login",
         data: data,
       });
       const token = response.accessToken;
       if (token) {
-          setCookie("jwt", token);
-          toast.success("Login success!");
-          router.push("/home");
+        setCookie("accessToken", token);
+        toast.success("Login success!");
+        router.push("/home");
       } else {
         throw new Error("Login failed");
       }
-    } catch (error: any) {
-      toast.error("Login failed !! " + error.message);
+    } catch (error) {
+      setErrorMessage("Login failed !! " + error);
     }
   };
 
@@ -86,6 +83,11 @@ export default function LoginForm() {
         <button className="w-full bg-[#1877F2] py-3 rounded-lg text-white text-lg font-bold hover:bg-[#0d65d9] transition ease-in-out duration-200">
           Login
         </button>
+        {errorMessage && (
+          <div className="text-red-700 mt-4 text-center font-semibold">
+            {errorMessage}
+          </div>
+        )}
         <div className="text-center mt-4">
           <div className="text-[#1877F2] text-sm hover:underline">
             Forgot password?
