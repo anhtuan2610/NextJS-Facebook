@@ -2,22 +2,28 @@ import { useState } from "react";
 import useSWR from "swr";
 import Image from "next/image";
 import { getLastedChatInfo } from "@/services/chat-api";
-import { useUserStore } from "@/store/user";
 import userImg from "@/assets/images/user-img.jpg";
-import SearchMessenger from "./SearchMessenger";
-import Loading from "@/components/common/Loading";
+import SearchMessenger from "./messenger-search";
+import Loading from "@/components/common/Loading/index";
+import { TUser } from "@/utils/type-common";
 
-export default function ListMessenger() {
-  const [searchString, setSearchString] = useState<string>("");
-  const { user } = useUserStore(); // Ép TypeScript hiểu rằng user chắc chắn tồn tại
+type TProps = {
+  user: TUser;
+  setReceiverId: (id: number) => void;
+  setReceiverName: (name: string) => void;
+}
+
+export default function ListMessenger({user, setReceiverId, setReceiverName}: TProps) {
+  const [searchString, setSearchString] = useState<string | undefined>(undefined);
   const userId = user!.id;
 
   const { data, isLoading, error } = useSWR(["fetchMessage", userId, searchString], () => getLastedChatInfo({userId, searchString}), {
     revalidateOnFocus: false
   });
 
-  function handleShowBoxChat(userId: number) {
-    
+  function handleShowBoxChat(userId: number, name: string) {
+    setReceiverId(userId);
+    setReceiverName(name);
   }
 
   return (
@@ -34,7 +40,7 @@ export default function ListMessenger() {
           <div>{error.message}</div>
         ) : (
           data?.map((c) => (
-            <div onClick={() => handleShowBoxChat(c.userId)} className="flex items-center hover:bg-slate-100 py-2 px-1">
+            <div onClick={() => handleShowBoxChat(c.userId, c.fullName)} className="flex items-center hover:bg-slate-100 py-2 px-1">
               <div className="w-16 h-16 border-gray-600 flex justify-center items-center">
                 <Image className="rounded-full" src={userImg} alt="avatar" />
               </div>

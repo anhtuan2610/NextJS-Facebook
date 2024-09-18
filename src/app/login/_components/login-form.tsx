@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { setCookie } from "cookies-next";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginApi } from "@/services/auth-api";
-import Input from "@/components/common/Input";
+import Input from "@/components/common/Input/index";
 
 const schema = z.object({
   userName: z
@@ -22,7 +22,7 @@ const schema = z.object({
 export type LoginFormType = z.infer<typeof schema>;
 
 export default function LoginForm() {
-  const [errorMessage, setErrorMessage] = useState("");
+  const [apiErrorMessage, setApiErrorMessage] = useState("");
   const router = useRouter();
 
   const {
@@ -52,7 +52,7 @@ export default function LoginForm() {
         throw new Error("Login failed");
       }
     } catch (error) {
-      setErrorMessage("Login failed !! " + error);
+      setApiErrorMessage("Login failed !! " + error);
     }
   };
 
@@ -83,9 +83,9 @@ export default function LoginForm() {
         <button className="w-full bg-[#1877F2] py-3 rounded-lg text-white text-lg font-bold hover:bg-[#0d65d9] transition ease-in-out duration-200">
           Login
         </button>
-        {errorMessage && (
+        {apiErrorMessage && (
           <div className="text-red-700 mt-4 text-center font-semibold">
-            {errorMessage}
+            {apiErrorMessage}
           </div>
         )}
         <div className="text-center mt-4">

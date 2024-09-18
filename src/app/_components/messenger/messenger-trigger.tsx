@@ -3,10 +3,18 @@
 import { useState } from "react";
 import Image from "next/image";
 import messengerIcon from "@/assets/images/icons8-messenger-40.png";
-import ListMessenger from "./ListMessenger";
+import ListMessenger from "./messenger-list";
+import { TUser } from "@/utils/type-common";
+import BoxMessenger from "./messenger-box";
 
-export default function Messenger() {
+type TProps = {
+  user: TUser;
+};
+
+export default function Messenger({ user }: TProps) {
   const [isShow, setIsShow] = useState(false);
+  const [receiverId, setReceiverId] = useState<number | null>(null);
+  const [receiverName, setReceiverName] = useState<string>("");
 
   return (
     <div className="w-11 flex justify-center items-center bg-[#E4E6EB] rounded-full hover:bg-[#d3d5da] cursor-pointer">
@@ -19,8 +27,9 @@ export default function Messenger() {
           onClick={() => setIsShow(!isShow)}
         />
         <div className={isShow ? "block" : "hidden"}>
-          <ListMessenger />
+          <ListMessenger user={user} setReceiverId={setReceiverId} setReceiverName={setReceiverName} />
         </div>
+        {receiverId && <BoxMessenger userId={user.id} receiverId={receiverId} receiverName={receiverName} />}
       </div>
     </div>
   );

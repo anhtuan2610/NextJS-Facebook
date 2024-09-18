@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerApi } from "@/services/auth-api";
-import Input from "@/components/common/Input";
+import Input from "@/components/common/Input/index";
 
 
 const schema = z
@@ -30,7 +30,7 @@ const schema = z
 export type RegisterFormType = z.infer<typeof schema>;
 
 export default function RegisterForm() {
-  const [errorMessage, setErrorMessage] = useState("");
+  const [apiErrorMessage, setApiErrorMessage] = useState("");
   const router = useRouter();
 
   const {
@@ -58,7 +58,7 @@ export default function RegisterForm() {
       toast.success("Register success, let's login!");
       router.push("/login");
     } catch (error) {
-      setErrorMessage("Register failed !! " + error);
+      setApiErrorMessage("Register failed !! " + error);
     }
   };
 
@@ -120,9 +120,9 @@ export default function RegisterForm() {
         <button className="w-full bg-[#1877F2] py-3 rounded-lg text-white text-lg font-bold hover:bg-[#0d65d9] transition ease-in-out duration-200">
           Register
         </button>
-        {errorMessage && (
+        {apiErrorMessage && (
           <div className="text-red-700 mt-4 text-center font-semibold">
-            {errorMessage}
+            {apiErrorMessage}
           </div>
         )}
         <div className="text-center mt-4">

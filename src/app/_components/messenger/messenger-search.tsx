@@ -2,7 +2,7 @@ import Image from "next/image";
 import searchIcon from "@/assets/images/icons8-search-40.png";
 
 type Props = {
-  searchString: string;
+  searchString: string | undefined;
   setSearchString: (value: string) => void;
 };
 
