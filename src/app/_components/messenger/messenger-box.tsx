@@ -5,8 +5,8 @@ import { getChatsBetweenUsers } from "@/services/chat-api";
 import useSWR from "swr";
 
 type TProps = {
-  userId: number; // user đã login
-  receiverId: number; // người gửi / nhận đã từng nhắn với user vừa được click
+  userId: number; // user logged
+  receiverId: number; // receiverId / sender already messaged the user who just clicked
   receiverName: string;
 };
 

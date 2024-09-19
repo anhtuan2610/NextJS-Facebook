@@ -40,7 +40,7 @@ export default function Navbar() {
   }, []);
   
 
-  if (user == null) {
+  if (!user) {
     return null;
   }
 
