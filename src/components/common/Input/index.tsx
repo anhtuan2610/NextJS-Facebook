@@ -19,7 +19,7 @@ const inputVariants = cva(
     variants: {
       scale: {
         small: "text-sm py-1 px-2",
-        medium: "text-base px-4",
+        medium: "text-base px-4 py-4",
         large: "text-lg py-3 px-4",
       },
       variant: {

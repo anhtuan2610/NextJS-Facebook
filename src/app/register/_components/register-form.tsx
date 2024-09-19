@@ -1,29 +1,38 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { registerApi } from "../services/auth-api";
 import { toast } from "sonner";
-import Input from "@/common/Input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { registerApi } from "@/services/auth-api";
+import Input from "@/components/common/Input/index";
 
-const schema = z.object({
-  userName: z
-    .string()
-    .min(4, "user name at least 4 characters")
-    .max(12, "name max has limit 12 characters"),
-  email: z.string().email(),
-  password: z.string().min(3, "password at least 3 characters"),
-  fullName: z.string().min(3, "full name at least 3 characters"),
-});
+
+const schema = z
+  .object({
+    userName: z
+      .string()
+      .min(4, "user name at least 4 characters")
+      .max(12, "name max has limit 12 characters"),
+    email: z.string().email(),
+    password: z.string().min(3, "password at least 3 characters"),
+    rePassword: z.string().min(3, "password at least 3 characters"),
+    fullName: z.string().min(3, "full name at least 3 characters"),
+  })
+  .refine((data) => data.password === data.rePassword, {
+    path: ["rePassword"],
+    message: "Password do not match",
+  });
 
 export type RegisterFormType = z.infer<typeof schema>;
 
 export default function RegisterForm() {
+  const [apiErrorMessage, setApiErrorMessage] = useState("");
   const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -33,31 +42,24 @@ export default function RegisterForm() {
       userName: "",
       email: "",
       password: "",
+      rePassword: "",
       fullName: "",
     },
     mode: "onSubmit",
     resolver: zodResolver(schema),
   });
 
-  const { mutate } = useMutation({
-    mutationKey: ["authRegister"],
-    mutationFn: async (data: RegisterFormType) => {
+  const onSubmitHandle = async (data: RegisterFormType) => {
+    try {
       await registerApi({
-        stringUrl: "register",
         data: data,
       });
-    },
-    onSuccess: () => {
-      toast.success("Register success, let's login !");
-      router.push("/login");
-    },
-    onError: (error) => {
-      toast.error("Registration failed !! " + error.message);
-    },
-  });
 
-  const onSubmitHandle = (data: RegisterFormType) => {
-    mutate(data);
+      toast.success("Register success, let's login!");
+      router.push("/login");
+    } catch (error) {
+      setApiErrorMessage("Register failed !! " + error);
+    }
   };
 
   return (
@@ -98,6 +100,17 @@ export default function RegisterForm() {
           <Input
             scale="medium"
             variant="primary"
+            placeholder="Repeat password"
+            {...register("rePassword")}
+            type="password"
+          />
+          <span className="text-red-700">{errors.rePassword?.message}</span>
+        </div>
+
+        <div className="mb-4">
+          <Input
+            scale="medium"
+            variant="primary"
             placeholder="Full name"
             {...register("fullName")}
           />
@@ -107,6 +120,11 @@ export default function RegisterForm() {
         <button className="w-full bg-[#1877F2] py-3 rounded-lg text-white text-lg font-bold hover:bg-[#0d65d9] transition ease-in-out duration-200">
           Register
         </button>
+        {apiErrorMessage && (
+          <div className="text-red-700 mt-4 text-center font-semibold">
+            {apiErrorMessage}
+          </div>
+        )}
         <div className="text-center mt-4">
           <div className="text-[#1877F2] text-sm hover:underline">
             Already has account ?

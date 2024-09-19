@@ -1,4 +1,4 @@
-import LoginForm from "@/components/Login";
+import LoginForm from "./_components/login-form";
 
 export default function LoginPage() {
   return (
@@ -9,8 +9,8 @@ export default function LoginPage() {
             facebook
           </h1>
           <div className="text-xl mb-4 xl:text-3xl">
-            <p>Connect with friends and the world</p>
-            <p>around you on Facebook.</p>
+            <div>Connect with friends and the world</div>
+            <div>around you on Facebook.</div>
           </div>
         </div>
         <LoginForm/>

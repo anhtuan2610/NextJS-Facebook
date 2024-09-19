@@ -1,44 +1,32 @@
-
-import { LoginFormType } from "@/components/Login";
-import { RegisterFormType } from "@/components/Register";
-import { ResponseLogin, TUser } from "@/utils/type-common";
-import { post } from "./axiosConfig";
+import { get, post } from "./axiosConfig";
+import { TResponseAuth, TUser } from "@/utils/type-common";
+import { RegisterFormType } from "@/app/register/_components/register-form";
+import { LoginFormType } from "@/app/login/_components/login-form";
 
 export async function registerApi({
-  stringUrl,
   data,
 }: {
-  stringUrl: string;
   data: RegisterFormType;
 }) {
-  await post({
-    url: `/auth/${stringUrl}`,
+  return await post<TResponseAuth>({
+    url: "/auth/register",
     data,
   });
 }
 
 export async function loginApi({
-  stringUrl,
   data,
 }: {
-  stringUrl: string;
   data: LoginFormType;
 }) {
-  return await post<ResponseLogin>({
-    url: `/auth/${stringUrl}`,
+  return await post<TResponseAuth>({
+    url: "/auth/login",
     data,
   });
 }
 
-export async function getUser({
-  stringUrl,
-  token,
-}: {
-  stringUrl: string;
-  token: string;
-  }) {
-  return await post<TUser>({
-    url: `/auth/${stringUrl}`,
-    data: token
+export async function getUser() {
+  return await get<TUser>({
+    url: "/auth/user"
   })
 };

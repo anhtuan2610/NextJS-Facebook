@@ -1,16 +1,15 @@
 "use client";
 
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import Link from "next/link";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { loginApi } from "../services/auth-api";
-import { authStorage } from "../utils/auth-storage";
 import { toast } from "sonner";
-import Input from "@/common/Input";
+import { setCookie } from "cookies-next";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginApi } from "@/services/auth-api";
+import Input from "@/components/common/Input/index";
 
 const schema = z.object({
   userName: z
@@ -23,6 +22,7 @@ const schema = z.object({
 export type LoginFormType = z.infer<typeof schema>;
 
 export default function LoginForm() {
+  const [apiErrorMessage, setApiErrorMessage] = useState("");
   const router = useRouter();
 
   const {
@@ -38,38 +38,22 @@ export default function LoginForm() {
     resolver: zodResolver(schema),
   });
 
-  const { mutate } = useMutation({
-    mutationKey: ["authLogin"],
-    mutationFn: async (data: LoginFormType) => {
+  const onSubmitHandle = async (data: LoginFormType) => {
+    try {
       const response = await loginApi({
-        stringUrl: "login",
         data: data,
       });
-      return response;
-    },
-    onSuccess: (response) => {
-      handleAccessToken(response.accessToken);
-      toast.success("Login success !");
-      router.push("/home");
-    },
-    onError: (error) => {
-      console.log(error.message);
-      toast.error("Login fail !! " + error.message);
-    },
-  });
-
-  useEffect(() => {
-    if (authStorage.getToken()) {
-      router.push("/home");
+      const token = response.accessToken;
+      if (token) {
+        setCookie("accessToken", token);
+        toast.success("Login success!");
+        router.push("/home");
+      } else {
+        throw new Error("Login failed");
+      }
+    } catch (error) {
+      setApiErrorMessage("Login failed !! " + error);
     }
-  }, []);
-
-  function handleAccessToken(accessToken: string) {
-    authStorage.setToken(accessToken);
-  }
-
-  const onSubmitHandle = (data: LoginFormType) => {
-    mutate(data);
   };
 
   return (
@@ -99,6 +83,11 @@ export default function LoginForm() {
         <button className="w-full bg-[#1877F2] py-3 rounded-lg text-white text-lg font-bold hover:bg-[#0d65d9] transition ease-in-out duration-200">
           Login
         </button>
+        {apiErrorMessage && (
+          <div className="text-red-700 mt-4 text-center font-semibold">
+            {apiErrorMessage}
+          </div>
+        )}
         <div className="text-center mt-4">
           <div className="text-[#1877F2] text-sm hover:underline">
             Forgot password?

@@ -1,27 +1,34 @@
 export type TUser = {
-  id: "string",
-  username: "string",
-  email: "string",
-  passwordHash: "string",
-  fullName: "string",
-  profileImg: "string",
-  coverImg: "string",
-  bio: "string",
-  dateOfBirth: "string",
-  gender: "string",
-  createdAt: "string",
-  updatedAt: "string",
-  chatReceivers: [],
-  chatSenders: [],
-  comments: [],
-  friendshipUserId1Navigations: [],
-  friendshipUserId2Navigations: [],
-  likes: [],
-  notifications: [],
-  posts: []
-}
+  id: number;
+  username: string;
+  email: string;
+  passwordHash: string;
+  fullName: string;
+  profileImg: string;
+  coverImg: string;
+  bio: string;
+  dateOfBirth: string;
+  gender: string;
+  createdAt: string;
+  updatedAt: string;
+};
 
-export type ResponseLogin = {
-    message: string,
-    accessToken: string
-}
+export type TResponseAuth = {
+  message: string;
+  accessToken: string;
+};
+
+export type TResponseLastedChat = {
+  userId: number;
+  fullName: string;
+  lastMessage: string;
+  createAt: string;
+  isSender: boolean;
+};
+
+export type TResponseChatBetweenUsers = {
+  id: number;
+  content: string;
+  createAt: string;
+  isSender: boolean;
+};
