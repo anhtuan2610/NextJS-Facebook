@@ -18,7 +18,7 @@ export default function ListMessenger({user, setReceiverId, setReceiverName}: TP
   const userId = user!.id;
 
   const { data, isLoading, error } = useSWR(["fetchMessage", userId, searchString], () => getLastedChatInfo({userId, searchString}), {
-    revalidateOnFocus: false
+    revalidateOnFocus: true
   });
 
   function handleShowBoxChat(userId: number, name: string) {

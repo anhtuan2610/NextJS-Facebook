@@ -1,8 +1,9 @@
 import {
+  TNewChat,
   TResponseChatBetweenUsers,
   TResponseLastedChat,
 } from "@/utils/type-common";
-import { get } from "./axiosConfig";
+import { get, post } from "./axiosConfig";
 
 type ChatSearchParams = {
   userId?: number;
@@ -29,6 +30,14 @@ export async function getChatsBetweenUsers({
   receiverId,
 }: UserChatParams) {
   return await get<TResponseChatBetweenUsers[]>({
-    url: `/chat/chatsWithUser/${userId}/${receiverId}`,
+    url: "/chat/chatsWithUser",
+    params: { userId, receiverId },
+  });
+}
+
+export async function addChatBetweenUsers({ data }: { data: TNewChat }) {
+  await post({
+    url: "/chat/add",
+    data,
   });
 }

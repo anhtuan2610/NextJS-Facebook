@@ -17,15 +17,22 @@ import Profile from "./profile/profile-trigger";
 import Notification from "./notification/notification-trigger";
 import { getUser } from "@/services/auth-api";
 import { TUser } from "@/utils/type-common";
+import { useChatConnectionStore } from "@/store/chathub-connection";
 
 export default function Navbar() {
+  const { connection } = useChatConnectionStore();
   const [user, setUser] = useState<TUser | null>();
   const router = useRouter();
 
-  function handleLogout() {
-    deleteCookie("accessToken");
-    setUser(null);
-    router.push("/login");
+  async function handleLogout() {
+    try {
+      await connection?.stop(); // Dừng kết nối
+      deleteCookie("accessToken"); // Xóa cookie
+      setUser(null); // Cập nhật state
+      router.push("/login"); // Chuyển hướng
+    } catch (error) {
+      console.error("Error during logout:", error); // Xử lý lỗi
+    }
   }
 
   async function getUserInfo() {

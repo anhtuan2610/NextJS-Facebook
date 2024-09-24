@@ -27,8 +27,15 @@ export type TResponseLastedChat = {
 };
 
 export type TResponseChatBetweenUsers = {
-  id: number;
+  id?: number;
   content: string;
   createAt: string;
   isSender: boolean;
+};
+
+export type TNewChat = {
+  senderId: number;
+  receiverId: number;
+  content: string;
+  isRead: boolean;
 };
